@@ -1,0 +1,6 @@
+#Maven stuff
+target/
+
+#IntelliJ stuff
+.idea
+*.iml
