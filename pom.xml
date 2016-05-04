@@ -11,6 +11,7 @@
     <properties>
         <lombok.version>1.16.8</lombok.version>
         <junit.version>4.12</junit.version>
+        <maven.javadoc.version>2.10.3</maven.javadoc.version>
     </properties>
 
     <dependencies>
@@ -27,4 +28,26 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.version}</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-generation</id>
+                        <goals>
+                            <goal>javadoc</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <reportOutputDirectory>${project.basedir}/docs</reportOutputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
