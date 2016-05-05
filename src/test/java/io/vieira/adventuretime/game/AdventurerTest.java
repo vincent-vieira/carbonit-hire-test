@@ -101,6 +101,11 @@ public class AdventurerTest {
                 1,
                 ((Adventurer) currentMap.at(new Position(3, 3)).filter(worldElement -> worldElement instanceof Adventurer).findFirst().orElse(null)).getPickedUpTreasures()
         );
+        Assert.assertEquals(
+                "The treasures number of the cell must have been decremented",
+                2,
+                ((Treasure) currentMap.at(new Position(3, 1)).filter(worldElement -> worldElement instanceof Treasure).findFirst().orElse(null)).getRemainingLoots()
+        );
     }
 
     @Test
@@ -134,6 +139,11 @@ public class AdventurerTest {
                 "There must be an adventurer and a treasure on 3,1 cell",
                 cellOccupation,
                 currentMap.at(new Position(3, 1)).collect(Collectors.groupingBy(WorldElement::getClass, Collectors.counting()))
+        );
+        Assert.assertEquals(
+                "The treasures number of the cell must have been decremented",
+                2,
+                ((Treasure) currentMap.at(new Position(3, 1)).filter(worldElement -> worldElement instanceof Treasure).findFirst().orElse(null)).getRemainingLoots()
         );
     }
 }

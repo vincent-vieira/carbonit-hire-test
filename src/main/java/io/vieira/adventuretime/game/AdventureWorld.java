@@ -176,8 +176,10 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             adventurer.updatePosition(newPosition);
             adventurer.setCurrentOrientation(result.getNewOrientation());
 
-            if(at(newPosition).filter(worldElement -> worldElement instanceof Treasure).count() == 1){
+            Optional<WorldElement> optionalTreasure = at(newPosition).filter(worldElement -> worldElement instanceof Treasure).findFirst();
+            if(optionalTreasure.isPresent() && ((Treasure) optionalTreasure.get()).getRemainingLoots() != 0){
                 adventurer.setPickedUpTreasures(adventurer.getPickedUpTreasures() + 1);
+                ((Treasure) this.worldElements[newPosition.getAbsoluteNorthing()][newPosition.getAbsoluteEasting()]).removeALoot();
             }
             adventurer.getPathHistory().add(direction);
             adventurers.put(adventurerID, adventurer);

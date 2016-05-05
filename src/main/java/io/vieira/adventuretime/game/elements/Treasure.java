@@ -12,10 +12,14 @@ import lombok.ToString;
 public class Treasure extends WorldElement {
 
     @Getter
-    private int lootNumber;
+    private int remainingLoots;
 
-    public Treasure(int northing, int easting, int lootNumber) {
+    public Treasure(int northing, int easting, int remainingLoots) {
         super(northing, easting);
-        this.lootNumber = lootNumber;
+        this.remainingLoots = remainingLoots;
+    }
+
+    public void removeALoot(){
+        this.remainingLoots -= 1;
     }
 }
