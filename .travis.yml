@@ -4,4 +4,6 @@ branches:
     - master
 jdk:
   - oraclejdk8
-  - oraclejdk7
+notifications:
+  email:
+    on_success: never
