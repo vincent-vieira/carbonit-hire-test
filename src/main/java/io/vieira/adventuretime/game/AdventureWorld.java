@@ -120,7 +120,6 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         );
     }
 
-
     @Override
     public Stream<WorldElement> at(Position position) {
         if(position.getAbsoluteNorthing() >= height || position.getAbsoluteNorthing() < 0){
