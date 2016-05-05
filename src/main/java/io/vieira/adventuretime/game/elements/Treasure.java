@@ -1,13 +1,15 @@
 package io.vieira.adventuretime.game.elements;
 
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * Treasure model class.
  *
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
-public class Treasure extends MapElement {
+@ToString(callSuper = true)
+public class Treasure extends WorldElement {
 
     @Getter
     private int lootNumber;

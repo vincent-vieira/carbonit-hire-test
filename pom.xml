@@ -19,9 +19,15 @@
         <maven.javadoc.version>2.10.3</maven.javadoc.version>
         <maven.surefire.version>2.19.1</maven.surefire.version>
         <maven.compiler.version>3.5.1</maven.compiler.version>
+        <guava.version>19.0</guava.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

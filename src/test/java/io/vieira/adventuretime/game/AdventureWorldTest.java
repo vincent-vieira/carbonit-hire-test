@@ -1,8 +1,7 @@
 package io.vieira.adventuretime.game;
 
-import io.vieira.adventuretime.game.elements.MapElement;
+import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.elements.Adventurer;
-import io.vieira.adventuretime.game.elements.Grassland;
 import io.vieira.adventuretime.game.elements.Mountain;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,28 +16,31 @@ import java.util.HashMap;
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
 @RunWith(BlockJUnit4ClassRunner.class)
-public class MapTest {
+public class AdventureWorldTest {
 
     @Test
     public void testMapInitialization(){
-        Map toCheck = new Map
+        AdventureWorld toCheck = new AdventureWorld
                 .Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(0, 0))
+                .adventurer(new Adventurer(1, 1))
                 .build();
 
-        Assert.assertTrue("First cell must be an Adventurer", toCheck.at(1, 1) instanceof Adventurer);
-        Assert.assertEquals("All other cells must be Grasslands", 63, toCheck.getNumberOf(Grassland.class));
-        Assert.assertEquals("The occupation is invalid", new HashMap<Class<? extends MapElement>, Long>(){{
+        Assert.assertEquals(
+                "First cell must be an Adventurer",
+                1,
+                toCheck.at(new Position(1, 1)).filter(worldElement -> worldElement instanceof Adventurer).count()
+        );
+        Assert.assertEquals("The occupation is invalid", new HashMap<Class<? extends WorldElement>, Long>(){{
             put(Adventurer.class, 1L);
-            put(Grassland.class, 63L);
         }}, toCheck.getOccupation());
+        Assert.assertEquals("The fetched count is invalid", 1, toCheck.getNumberOf(Adventurer.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testMapInitializationWithInvalidWidth(){
-        new Map.Builder()
+        new AdventureWorld.Builder()
                 .width(-1)
                 .height(8)
                 .build();
@@ -46,7 +48,7 @@ public class MapTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMapInitializationWithInvalidHeight(){
-        new Map.Builder()
+        new AdventureWorld.Builder()
                 .width(8)
                 .height(-1)
                 .build();
@@ -54,25 +56,32 @@ public class MapTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testMapInitializationWithoutSetBounds(){
-        new Map.Builder().build();
+        new AdventureWorld.Builder().build();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMapInitializationWithInvalidRelativeCoordinates(){
+        new AdventureWorld
+                .Builder()
+                .width(8)
+                .height(8)
+                .adventurer(new Adventurer(0, 0))
+                .build();
     }
 
     @Test
     public void testEmptyMapInitialization(){
-        Map toCheck = new Map
+        AdventureWorld toCheck = new AdventureWorld
                 .Builder()
                 .width(8)
                 .height(8)
                 .build();
-        Assert.assertEquals("All cells must be Grasslands", 64, toCheck.getNumberOf(Grassland.class));
-        Assert.assertEquals("The occupation is invalid", new HashMap<Class<? extends MapElement>, Long>(){{
-            put(Grassland.class, 64L);
-        }}, toCheck.getOccupation());
+        Assert.assertEquals("The occupation is invalid", new HashMap<Class<? extends WorldElement>, Long>(), toCheck.getOccupation());
     }
 
     @Test(expected = IllegalStateException.class)
     public void testMapInitializationUsingOverlappingElements(){
-        new Map.Builder()
+        new AdventureWorld.Builder()
                 .width(8)
                 .height(8)
                 .adventurer(new Adventurer(1, 1))

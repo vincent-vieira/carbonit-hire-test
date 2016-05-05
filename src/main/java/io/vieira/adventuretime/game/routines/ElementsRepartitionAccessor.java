@@ -1,6 +1,6 @@
 package io.vieira.adventuretime.game.routines;
 
-import io.vieira.adventuretime.game.elements.MapElement;
+import io.vieira.adventuretime.game.elements.WorldElement;
 
 import java.util.Map;
 
@@ -12,17 +12,17 @@ import java.util.Map;
 public interface ElementsRepartitionAccessor {
 
     /**
-     * Fetches the count of the supplied {@link MapElement} inside the current map.
+     * Fetches the count of the supplied {@link WorldElement} inside the current map.
      *
-     * @param desiredType the searched {@link MapElement}
+     * @param desiredType the searched {@link WorldElement}
      * @return the count
      */
-    long getNumberOf(Class<? extends MapElement> desiredType);
+    long getNumberOf(Class<? extends WorldElement> desiredType);
 
     /**
-     * Fetches all occupation statistics, grouped by {@link MapElement}.
+     * Fetches all occupation statistics, grouped by {@link WorldElement}.
      *
-     * @return a {@link Map} containing the {@link MapElement} as a key, and the count as a value.
+     * @return a {@link Map} containing the {@link WorldElement} as a key, and the count as a value.
      */
-    Map<Class<? extends MapElement>, Long> getOccupation();
+    Map<Class<? extends WorldElement>, Long> getOccupation();
 }
