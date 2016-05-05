@@ -8,8 +8,6 @@ import io.vieira.adventuretime.game.helpers.MovementTryResult;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +19,6 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
-@RunWith(BlockJUnit4ClassRunner.class)
 public class AdventurerTest {
 
     private Adventurer targetAdventurer = new Adventurer(Orientation.SOUTH, 1, 1);

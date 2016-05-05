@@ -1,12 +1,10 @@
 package io.vieira.adventuretime.game;
 
-import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
+import io.vieira.adventuretime.game.elements.WorldElement;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.BlockJUnit4ClassRunner;
 
 import java.util.HashMap;
 
@@ -15,7 +13,6 @@ import java.util.HashMap;
  *
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
-@RunWith(BlockJUnit4ClassRunner.class)
 public class AdventureWorldTest {
 
     @Test
