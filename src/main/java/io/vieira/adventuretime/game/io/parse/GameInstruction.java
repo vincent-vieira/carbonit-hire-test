@@ -92,7 +92,7 @@ public interface GameInstruction<T> {
     };
 
     GameInstruction ADVENTURER = new GameInstruction<Adventurer>() {
-        private final Pattern instructionPattern = Pattern.compile("^(\\w+)\\s(\\d-\\d)\\s(N|E|S|O)\\s([A|D|G]+)$");
+        private final Pattern instructionPattern = Pattern.compile("^(\\w+)\\s(\\d-\\d)\\s(N|E|S|O)\\s?([A|D|G]*)$");
 
         @Override
         public Pattern instructionPattern() {

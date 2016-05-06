@@ -4,7 +4,7 @@ import io.vieira.adventuretime.game.AdventureWorld;
 import io.vieira.adventuretime.game.Position;
 import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.WorldElement;
-import io.vieira.adventuretime.game.io.AdventureGameFileLoader;
+import io.vieira.adventuretime.game.io.read.AdventureGameFileLoader;
 import io.vieira.adventuretime.game.io.exception.MissingGameParameterException;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -83,6 +83,14 @@ public class UniqueAdventureGameFileLoaderTest extends BaseGameFileLoaderTest {
                 0,
                 world.at(new Position(1, 4)).count()
         );
+    }
+
+    @Test
+    public void testFileWithAdventurerAndNoPath() throws Exception {
+        AdventureWorld world = new AdventureGameFileLoader.Builder()
+                .path(getResource("/nopath/gamefile.txt"))
+                .build();
+        sharedAssertions(world);
     }
 
     @Override
