@@ -1,7 +1,10 @@
 package io.vieira.adventuretime.game;
 
+import io.vieira.adventuretime.game.io.write.Savable;
 import lombok.Getter;
 import lombok.ToString;
+
+import java.util.StringJoiner;
 
 /**
  * Position class, wrapping northing/easting of the target {@link io.vieira.adventuretime.game.elements.WorldElement}.
@@ -10,7 +13,7 @@ import lombok.ToString;
  */
 @Getter
 @ToString
-public class Position {
+public class Position implements Savable {
 
     private final int northing;
     private final int easting;
@@ -54,5 +57,10 @@ public class Position {
                 Integer.parseInt(parts[1]),
                 Integer.parseInt(parts[0])
         );
+    }
+
+    @Override
+    public String getSavableRepresentation() {
+        return new StringJoiner("-").add(Integer.toString(easting)).add(Integer.toString(northing)).toString();
     }
 }

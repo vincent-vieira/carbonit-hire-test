@@ -50,7 +50,7 @@ public enum Orientation {
             }}
     ),
     WEST(
-            "W",
+            "O",
             new HashMap<Direction, PositionAdjuster>(){{
                 put(Direction.FORWARD, new PositionAdjuster(
                         PositionAdjuster.IDENTITY,

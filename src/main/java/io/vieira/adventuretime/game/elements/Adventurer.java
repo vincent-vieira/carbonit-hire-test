@@ -9,6 +9,8 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * Adventurer model class.
@@ -40,5 +42,18 @@ public class Adventurer extends WorldElement {
     //Exposing the necessary setter just here
     public void updatePosition(Position newPosition){
         this.position = newPosition;
+    }
+
+    @Override
+    public String getSavableRepresentation() {
+        String directionsHistory = pathHistory.stream().map(Direction::getDirectionCode).collect(Collectors.joining());
+        StringJoiner joiner = new StringJoiner(" ")
+                .add(adventurerName)
+                .add(super.getSavableRepresentation())
+                .add(currentOrientation.getOrientationCode());
+        if(!directionsHistory.equals("")){
+            joiner.add(directionsHistory);
+        }
+        return joiner.toString();
     }
 }

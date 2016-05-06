@@ -6,13 +6,14 @@ import io.vieira.adventuretime.game.elements.Treasure;
 import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.helpers.MovementTryResult;
 import io.vieira.adventuretime.game.helpers.WorldSize;
-import io.vieira.adventuretime.game.io.AdventureReporter;
+import io.vieira.adventuretime.game.io.write.AdventureReporter;
 import io.vieira.adventuretime.game.routines.ElementsRepartitionAccessor;
 import io.vieira.adventuretime.game.routines.MovementProvider;
 import io.vieira.adventuretime.game.routines.PositionAccessor;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -260,7 +261,15 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
      */
     public void end(){
         if(reporter != null){
-            reporter.report(this);
+            reporter.report(
+                    Stream.of(
+                            adventurers.values().stream(),
+                            Stream.of(getSize()),
+                            Arrays.stream(this.worldElements).flatMap(Arrays::stream)
+                    )
+                    .flatMap(Function.identity())
+                    .filter(worldElement -> worldElement != null)
+            );
         }
     }
 }

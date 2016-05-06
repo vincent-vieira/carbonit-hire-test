@@ -1,4 +1,4 @@
-package io.vieira.adventuretime.game.io;
+package io.vieira.adventuretime.game.io.read;
 
 import com.mscharhag.et.ET;
 import com.mscharhag.et.ExceptionTranslator;
@@ -7,6 +7,8 @@ import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.Treasure;
 import io.vieira.adventuretime.game.helpers.WorldSize;
+import io.vieira.adventuretime.game.io.write.AdventureReporter;
+import io.vieira.adventuretime.game.io.write.PathReporter;
 import io.vieira.adventuretime.game.io.exception.GameInstructionParsingException;
 import io.vieira.adventuretime.game.io.exception.MissingGameParameterException;
 import io.vieira.adventuretime.game.io.exception.UnreadableGameFile;

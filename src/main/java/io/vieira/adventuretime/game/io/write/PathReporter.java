@@ -1,13 +1,13 @@
-package io.vieira.adventuretime.game.io;
+package io.vieira.adventuretime.game.io.write;
 
-import io.vieira.adventuretime.game.AdventureWorld;
 import io.vieira.adventuretime.game.io.exception.GameReportingFailedException;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * {@link java.nio.file.Path} based implementation of {@link AdventureReporter}.
@@ -23,10 +23,15 @@ public class PathReporter implements AdventureReporter {
     }
 
     @Override
-    public void report(AdventureWorld world) {
+    public void report(Stream<Savable> savableStream) {
         try {
-            ///TODO : codify all instructions
-            Files.write(outputPath, new ArrayList<>(), Charset.defaultCharset());
+            Files.write(
+                    outputPath,
+                    savableStream.
+                            map(Savable::getSavableRepresentation)
+                            .collect(Collectors.toList()),
+                    Charset.defaultCharset()
+            );
         }
         catch (IOException e) {
             throw new GameReportingFailedException("Unable to report current game", e);

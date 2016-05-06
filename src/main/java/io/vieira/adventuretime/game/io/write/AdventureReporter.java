@@ -1,6 +1,6 @@
-package io.vieira.adventuretime.game.io;
+package io.vieira.adventuretime.game.io.write;
 
-import io.vieira.adventuretime.game.AdventureWorld;
+import java.util.stream.Stream;
 
 /**
  * Interface describing the adventure reporter, writing to files the final state of the {@link io.vieira.adventuretime.game.AdventureWorld}.
@@ -9,11 +9,17 @@ import io.vieira.adventuretime.game.AdventureWorld;
  */
 @FunctionalInterface
 public interface AdventureReporter {
-    void report(AdventureWorld world);
+
+    /**
+     * Triggers reporting. To anything. File, network...
+     *
+     * @param savableStream a stream {@link Savable} elements.
+     */
+    void report(Stream<Savable> savableStream);
 
     class NoOpReporter implements AdventureReporter{
         @Override
-        public void report(AdventureWorld world) {
+        public void report(Stream<Savable> savableStream) {
             //Noop
         }
     }

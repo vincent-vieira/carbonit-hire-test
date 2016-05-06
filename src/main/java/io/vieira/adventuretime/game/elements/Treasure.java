@@ -3,6 +3,8 @@ package io.vieira.adventuretime.game.elements;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.StringJoiner;
+
 /**
  * Treasure model class.
  *
@@ -21,5 +23,10 @@ public class Treasure extends WorldElement {
 
     public void removeALoot(){
         this.remainingLoots -= 1;
+    }
+
+    @Override
+    public String getSavableRepresentation() {
+        return new StringJoiner(" ").add("T").add(super.getSavableRepresentation()).toString();
     }
 }
