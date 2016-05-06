@@ -171,7 +171,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                 Stream.of(
                         this.worldElements[position.getAbsoluteNorthing()][position.getAbsoluteEasting()]
                 )
-        );
+        ).filter(worldElement -> worldElement != null);
     }
 
     private Adventurer getAdventurerInternal(String adventurerName){
