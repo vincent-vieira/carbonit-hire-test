@@ -37,6 +37,15 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             return this;
         }
 
+        public Builder size(WorldSize size){
+            if(size == null){
+                throw new IllegalArgumentException("WorldSize must be supplied");
+            }
+            this.height = size.getHeight();
+            this.width = size.getWidth();
+            return this;
+        }
+
         public Builder adventurer(Adventurer adventurer){
             if(this.worldElements.contains(adventurer)){
                 throwCellAlreadyOccupiedInternal(adventurer);
@@ -206,5 +215,17 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                         WorldElement::getClass,
                         Collectors.counting()
                 ));
+    }
+
+    /**
+     * Fetches the size of the current {@link AdventureWorld}.
+     *
+     * @return the underlying {@link WorldSize} object.
+     */
+    public WorldSize getSize(){
+        return new WorldSize(
+                height,
+                width
+        );
     }
 }

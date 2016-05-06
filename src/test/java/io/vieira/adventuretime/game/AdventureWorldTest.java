@@ -3,6 +3,7 @@ package io.vieira.adventuretime.game;
 import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.WorldElement;
+import io.vieira.adventuretime.game.helpers.WorldSize;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -54,6 +55,21 @@ public class AdventureWorldTest {
     @Test(expected = IllegalArgumentException.class)
     public void testMapInitializationWithoutSetBounds(){
         new AdventureWorld.Builder().build();
+    }
+
+    @Test
+    public void testMapInitializationWithWorldSizeClass(){
+        AdventureWorld world = new AdventureWorld.Builder().size(new WorldSize(8, 8)).build();
+        Assert.assertEquals(
+                "Map must be 8x8",
+                world.getSize(),
+                new WorldSize(8, 8)
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMapInitializationWithNullWorldSize(){
+        new AdventureWorld.Builder().size(null).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
