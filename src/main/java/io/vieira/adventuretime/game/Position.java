@@ -37,9 +37,6 @@ public class Position {
             return false;
         }
         Position other = (Position) o;
-        return (
-                Integer.compare(easting, other.getEasting() +
-                Integer.compare(northing, other.getNorthing()))
-        ) == 0;
+        return easting == other.getEasting() && northing == other.getNorthing();
     }
 }
