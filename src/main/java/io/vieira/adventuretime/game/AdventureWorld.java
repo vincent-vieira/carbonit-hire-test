@@ -5,6 +5,8 @@ import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.Treasure;
 import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.helpers.MovementTryResult;
+import io.vieira.adventuretime.game.helpers.WorldSize;
+import io.vieira.adventuretime.game.io.AdventureReporter;
 import io.vieira.adventuretime.game.routines.ElementsRepartitionAccessor;
 import io.vieira.adventuretime.game.routines.MovementProvider;
 import io.vieira.adventuretime.game.routines.PositionAccessor;
@@ -26,6 +28,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         private List<WorldElement> worldElements = new ArrayList<>();
         private int width = -1;
         private int height = -1;
+        private AdventureReporter reporter;
 
         public Builder width(int width){
             this.width = width;
@@ -54,6 +57,11 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             return this;
         }
 
+        public Builder adventurers(Adventurer... adventurers){
+            Arrays.stream(adventurers).forEach(this::adventurer);
+            return this;
+        }
+
         public Builder treasure(Treasure treasure){
             if(this.worldElements.contains(treasure)){
                 throwCellAlreadyOccupiedInternal(treasure);
@@ -62,11 +70,26 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             return this;
         }
 
+        public Builder treasures(Treasure... treasures){
+            Arrays.stream(treasures).forEach(this::treasure);
+            return this;
+        }
+
         public Builder mountain(Mountain mountain){
             if(this.worldElements.contains(mountain)){
                 throwCellAlreadyOccupiedInternal(mountain);
             }
             this.worldElements.add(mountain);
+            return this;
+        }
+
+        public Builder mountains(Mountain... mountains){
+            Arrays.stream(mountains).forEach(this::mountain);
+            return this;
+        }
+
+        public Builder reporter(AdventureReporter reporter){
+            this.reporter = reporter;
             return this;
         }
 
@@ -87,7 +110,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             if(width <= 0){
                 throw new IllegalArgumentException("AdventureWorld width must be positive");
             }
-            return new AdventureWorld(width, height, worldElements);
+            return new AdventureWorld(width, height, worldElements, reporter);
         }
     }
 
@@ -99,7 +122,10 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
 
     private final Map<String, Adventurer> adventurers = new ConcurrentHashMap<>();
 
-    private AdventureWorld(int width, int height, List<WorldElement> worldElements){
+    private final AdventureReporter reporter;
+
+    private AdventureWorld(int width, int height, List<WorldElement> worldElements, AdventureReporter reporter){
+        this.reporter = reporter;
         this.worldElements = IntStream
                 .range(0, height)
                 .mapToObj(currentHeight -> IntStream
@@ -227,5 +253,14 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                 height,
                 width
         );
+    }
+
+    /**
+     * Used to signal the game end, in order to trigger reporting to a file, or whatever {@link AdventureReporter} implementation.
+     */
+    public void end(){
+        if(reporter != null){
+            reporter.report(this);
+        }
     }
 }
