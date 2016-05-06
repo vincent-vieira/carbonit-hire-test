@@ -39,4 +39,20 @@ public class Position {
         Position other = (Position) o;
         return easting == other.getEasting() && northing == other.getNorthing();
     }
+
+    public static Position fromString(String inputString) {
+        String[] parts = inputString.split("\\-");
+        if(parts.length != 2){
+            throw new IllegalArgumentException(
+                    String.format(
+                            "'%s' is not a valid position string.",
+                            inputString
+                    )
+            );
+        }
+        return new Position(
+                Integer.parseInt(parts[1]),
+                Integer.parseInt(parts[0])
+        );
+    }
 }
