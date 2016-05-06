@@ -77,6 +77,12 @@ public class UniqueAdventureGameFileLoaderTest extends BaseGameFileLoaderTest {
                 .path(getResource("/witherrors/gamefile.txt"))
                 .build();
         sharedAssertions(world);
+
+        Assert.assertEquals(
+                "There must be nothing at cell 4,1",
+                0,
+                world.at(new Position(1, 4)).count()
+        );
     }
 
     @Override

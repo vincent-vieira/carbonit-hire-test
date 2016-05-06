@@ -77,6 +77,12 @@ public class MultipleAdventureGameFileLoaderTest extends BaseGameFileLoaderTest 
                 .paths(getResource("/witherrors/gamefile1.txt"), getResource("/witherrors/gamefile2.txt"))
                 .build();
         sharedAssertions(world);
+
+        Assert.assertEquals(
+                "There must be nothing at cell 4,1",
+                0,
+                world.at(new Position(1, 4)).count()
+        );
     }
 
 
