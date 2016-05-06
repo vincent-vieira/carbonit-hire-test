@@ -21,7 +21,7 @@ public class AdventureWorldTest {
                 .Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
                 .build();
 
         Assert.assertEquals(
@@ -62,7 +62,7 @@ public class AdventureWorldTest {
                 .Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(0, 0))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 0, 0))
                 .build();
     }
 
@@ -81,7 +81,7 @@ public class AdventureWorldTest {
         new AdventureWorld.Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
                 .mountain(new Mountain(1, 1))
                 .build();
     }

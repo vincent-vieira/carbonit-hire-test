@@ -11,7 +11,6 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class AdventurerTest {
 
-    private Adventurer targetAdventurer = new Adventurer(Orientation.SOUTH, 1, 1);
+    private Adventurer targetAdventurer = new Adventurer(Orientation.SOUTH, "John", 1, 1);
 
     private AdventureWorld currentMap;
 
@@ -58,18 +57,18 @@ public class AdventurerTest {
     public void testAdventurerMovementOnMountain(){
         Assert.assertTrue(
                 "tryMoving() must return false",
-                !currentMap.tryMoving(targetAdventurer.getAdventurerID(), Direction.LEFT).isASuccess()
+                !currentMap.tryMoving(targetAdventurer.getAdventurerName(), Direction.LEFT).isASuccess()
         );
     }
 
     @Test(expected = IllegalStateException.class)
     public void testNonExistentAdventurerMovement(){
-        currentMap.tryMoving(UUID.randomUUID(), Direction.FORWARD);
+        currentMap.tryMoving("not a real name", Direction.FORWARD);
     }
 
     @Test
     public void testOutOfBoundsAdventurerMovement(){
-        MovementTryResult result = currentMap.tryMoving(targetAdventurer.getAdventurerID(), Direction.RIGHT);
+        MovementTryResult result = currentMap.tryMoving(targetAdventurer.getAdventurerName(), Direction.RIGHT);
         Assert.assertTrue(
                 "tryMoving() must return false when going out of bounds",
                 !result.isASuccess()
@@ -84,10 +83,10 @@ public class AdventurerTest {
 
     @Test
     public void testAdventurerMovementsWithTreasurePickup(){
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.LEFT);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.LEFT);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
         Assert.assertEquals(
                 "Adventurer not found at expected northing and easting",
                 1,
@@ -107,9 +106,9 @@ public class AdventurerTest {
 
     @Test
     public void testAdventurerMovementsWithMountain(){
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.LEFT);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.LEFT);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
         Assert.assertEquals(
                 "Adventurer not found at expected northing and easting",
                 1,
@@ -119,9 +118,9 @@ public class AdventurerTest {
 
     @Test
     public void testAdventurerMovementsAndFinaleOnMultiElementCell(){
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.LEFT);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
-        currentMap.move(targetAdventurer.getAdventurerID(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.LEFT);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
+        currentMap.move(targetAdventurer.getAdventurerName(), Direction.FORWARD);
         Assert.assertEquals(
                 "Two type of elements must be present on 3,1 cell",
                 2,

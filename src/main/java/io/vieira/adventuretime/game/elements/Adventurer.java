@@ -9,7 +9,6 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Adventurer model class.
@@ -23,24 +22,18 @@ public class Adventurer extends WorldElement {
     @Setter
     private int pickedUpTreasures;
 
-    private final UUID adventurerID;
+    private final String adventurerName;
 
     @Setter
     private Orientation currentOrientation;
 
     private final List<Direction> pathHistory = new ArrayList<>();
 
-    public Adventurer(int northing, int easting) {
-        this(Orientation.EAST, UUID.randomUUID(), northing, easting);
-    }
+    //TODO : Queue for configured path ?
 
-    public Adventurer(Orientation orientation, int northing, int easting) {
-        this(orientation, UUID.randomUUID(), northing, easting);
-    }
-
-    public Adventurer(Orientation orientation, UUID id, int northing, int easting) {
+    public Adventurer(Orientation orientation, String adventurerName, int northing, int easting) {
         super(northing, easting);
-        this.adventurerID = id;
+        this.adventurerName = adventurerName;
         this.currentOrientation = orientation;
     }
 

@@ -88,7 +88,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
 
     private final int width;
 
-    private final Map<UUID, Adventurer> adventurers = new ConcurrentHashMap<>();
+    private final Map<String, Adventurer> adventurers = new ConcurrentHashMap<>();
 
     private AdventureWorld(int width, int height, List<WorldElement> worldElements){
         this.worldElements = IntStream
@@ -113,7 +113,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                         .filter(mapElement -> mapElement instanceof Adventurer)
                         .collect(
                                 Collectors.toMap(
-                                        worldElement -> ((Adventurer) worldElement).getAdventurerID(),
+                                        worldElement -> ((Adventurer) worldElement).getAdventurerName(),
                                         worldElement -> (Adventurer) worldElement
                                 )
                         )
@@ -139,13 +139,13 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         );
     }
 
-    private Adventurer getAdventurerInternal(UUID adventurerID){
-        Adventurer adventurer = this.adventurers.getOrDefault(adventurerID, null);
+    private Adventurer getAdventurerInternal(String adventurerName){
+        Adventurer adventurer = this.adventurers.getOrDefault(adventurerName, null);
         if(adventurer == null){
             throw new IllegalStateException(
                     String.format(
                             "Adventurer '%s' does not exist",
-                            adventurerID
+                            adventurerName
                     )
             );
         }
@@ -153,8 +153,8 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public synchronized MovementTryResult tryMoving(UUID adventurerID, Direction direction) {
-        Adventurer adventurer = getAdventurerInternal(adventurerID);
+    public synchronized MovementTryResult tryMoving(String adventurerName, Direction direction) {
+        Adventurer adventurer = getAdventurerInternal(adventurerName);
         Position newPosition = adventurer.getCurrentOrientation().move(direction).adjust(adventurer.getPosition());
         Orientation newOrientation = adventurer.getCurrentOrientation().deduce(direction);
 
@@ -167,11 +167,11 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public synchronized void move(UUID adventurerID, Direction direction) {
-        MovementTryResult result = tryMoving(adventurerID, direction);
+    public synchronized void move(String adventurerName, Direction direction) {
+        MovementTryResult result = tryMoving(adventurerName, direction);
         if(result.isASuccess()){
             Position newPosition = result.getNewPosition();
-            Adventurer adventurer = getAdventurerInternal(adventurerID);
+            Adventurer adventurer = getAdventurerInternal(adventurerName);
             adventurer.updatePosition(newPosition);
             adventurer.setCurrentOrientation(result.getNewOrientation());
 
@@ -181,7 +181,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                 ((Treasure) this.worldElements[newPosition.getAbsoluteNorthing()][newPosition.getAbsoluteEasting()]).removeALoot();
             }
             adventurer.getPathHistory().add(direction);
-            adventurers.put(adventurerID, adventurer);
+            adventurers.put(adventurerName, adventurer);
         }
     }
 
