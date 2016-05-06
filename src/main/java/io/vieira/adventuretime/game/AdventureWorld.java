@@ -5,12 +5,15 @@ import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.Treasure;
 import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.helpers.MovementTryResult;
+import io.vieira.adventuretime.game.helpers.WorldSize;
+import io.vieira.adventuretime.game.io.write.AdventureReporter;
 import io.vieira.adventuretime.game.routines.ElementsRepartitionAccessor;
 import io.vieira.adventuretime.game.routines.MovementProvider;
 import io.vieira.adventuretime.game.routines.PositionAccessor;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -26,6 +29,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         private List<WorldElement> worldElements = new ArrayList<>();
         private int width = -1;
         private int height = -1;
+        private AdventureReporter reporter;
 
         public Builder width(int width){
             this.width = width;
@@ -37,11 +41,25 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             return this;
         }
 
+        public Builder size(WorldSize size){
+            if(size == null){
+                throw new IllegalArgumentException("WorldSize must be supplied");
+            }
+            this.height = size.getHeight();
+            this.width = size.getWidth();
+            return this;
+        }
+
         public Builder adventurer(Adventurer adventurer){
             if(this.worldElements.contains(adventurer)){
                 throwCellAlreadyOccupiedInternal(adventurer);
             }
             this.worldElements.add(adventurer);
+            return this;
+        }
+
+        public Builder adventurers(Adventurer... adventurers){
+            Arrays.stream(adventurers).forEach(this::adventurer);
             return this;
         }
 
@@ -53,11 +71,26 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             return this;
         }
 
+        public Builder treasures(Treasure... treasures){
+            Arrays.stream(treasures).forEach(this::treasure);
+            return this;
+        }
+
         public Builder mountain(Mountain mountain){
             if(this.worldElements.contains(mountain)){
                 throwCellAlreadyOccupiedInternal(mountain);
             }
             this.worldElements.add(mountain);
+            return this;
+        }
+
+        public Builder mountains(Mountain... mountains){
+            Arrays.stream(mountains).forEach(this::mountain);
+            return this;
+        }
+
+        public Builder reporter(AdventureReporter reporter){
+            this.reporter = reporter;
             return this;
         }
 
@@ -78,7 +111,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
             if(width <= 0){
                 throw new IllegalArgumentException("AdventureWorld width must be positive");
             }
-            return new AdventureWorld(width, height, worldElements);
+            return new AdventureWorld(width, height, worldElements, reporter);
         }
     }
 
@@ -88,9 +121,12 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
 
     private final int width;
 
-    private final Map<UUID, Adventurer> adventurers = new ConcurrentHashMap<>();
+    private final Map<String, Adventurer> adventurers = new ConcurrentHashMap<>();
 
-    private AdventureWorld(int width, int height, List<WorldElement> worldElements){
+    private final AdventureReporter reporter;
+
+    private AdventureWorld(int width, int height, List<WorldElement> worldElements, AdventureReporter reporter){
+        this.reporter = reporter;
         this.worldElements = IntStream
                 .range(0, height)
                 .mapToObj(currentHeight -> IntStream
@@ -113,13 +149,12 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                         .filter(mapElement -> mapElement instanceof Adventurer)
                         .collect(
                                 Collectors.toMap(
-                                        worldElement -> ((Adventurer) worldElement).getAdventurerID(),
+                                        worldElement -> ((Adventurer) worldElement).getAdventurerName(),
                                         worldElement -> (Adventurer) worldElement
                                 )
                         )
         );
     }
-
 
     @Override
     public Stream<WorldElement> at(Position position) {
@@ -137,16 +172,16 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                 Stream.of(
                         this.worldElements[position.getAbsoluteNorthing()][position.getAbsoluteEasting()]
                 )
-        );
+        ).filter(worldElement -> worldElement != null);
     }
 
-    private Adventurer getAdventurerInternal(UUID adventurerID){
-        Adventurer adventurer = this.adventurers.getOrDefault(adventurerID, null);
+    private Adventurer getAdventurerInternal(String adventurerName){
+        Adventurer adventurer = this.adventurers.getOrDefault(adventurerName, null);
         if(adventurer == null){
             throw new IllegalStateException(
                     String.format(
                             "Adventurer '%s' does not exist",
-                            adventurerID
+                            adventurerName
                     )
             );
         }
@@ -154,8 +189,8 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public synchronized MovementTryResult tryMoving(UUID adventurerID, Direction direction) {
-        Adventurer adventurer = getAdventurerInternal(adventurerID);
+    public synchronized MovementTryResult tryMoving(String adventurerName, Direction direction) {
+        Adventurer adventurer = getAdventurerInternal(adventurerName);
         Position newPosition = adventurer.getCurrentOrientation().move(direction).adjust(adventurer.getPosition());
         Orientation newOrientation = adventurer.getCurrentOrientation().deduce(direction);
 
@@ -168,11 +203,11 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public synchronized void move(UUID adventurerID, Direction direction) {
-        MovementTryResult result = tryMoving(adventurerID, direction);
+    public synchronized void move(String adventurerName, Direction direction) {
+        MovementTryResult result = tryMoving(adventurerName, direction);
         if(result.isASuccess()){
             Position newPosition = result.getNewPosition();
-            Adventurer adventurer = getAdventurerInternal(adventurerID);
+            Adventurer adventurer = getAdventurerInternal(adventurerName);
             adventurer.updatePosition(newPosition);
             adventurer.setCurrentOrientation(result.getNewOrientation());
 
@@ -182,7 +217,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                 ((Treasure) this.worldElements[newPosition.getAbsoluteNorthing()][newPosition.getAbsoluteEasting()]).removeALoot();
             }
             adventurer.getPathHistory().add(direction);
-            adventurers.put(adventurerID, adventurer);
+            adventurers.put(adventurerName, adventurer);
         }
     }
 
@@ -207,5 +242,34 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                         WorldElement::getClass,
                         Collectors.counting()
                 ));
+    }
+
+    /**
+     * Fetches the size of the current {@link AdventureWorld}.
+     *
+     * @return the underlying {@link WorldSize} object.
+     */
+    public WorldSize getSize(){
+        return new WorldSize(
+                height,
+                width
+        );
+    }
+
+    /**
+     * Used to signal the game end, in order to trigger reporting to a file, or whatever {@link AdventureReporter} implementation.
+     */
+    public void end(){
+        if(reporter != null){
+            reporter.report(
+                    Stream.of(
+                            adventurers.values().stream(),
+                            Stream.of(getSize()),
+                            Arrays.stream(this.worldElements).flatMap(Arrays::stream)
+                    )
+                    .flatMap(Function.identity())
+                    .filter(worldElement -> worldElement != null)
+            );
+        }
     }
 }

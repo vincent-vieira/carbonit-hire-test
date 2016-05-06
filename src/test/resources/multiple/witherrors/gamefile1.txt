@@ -1,0 +1,4 @@
+C 6 6
+John 1-1 E AADADAGA
+
+T 4-1

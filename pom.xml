@@ -20,6 +20,8 @@
         <maven.surefire.version>2.19.1</maven.surefire.version>
         <maven.compiler.version>3.5.1</maven.compiler.version>
         <guava.version>19.0</guava.version>
+        <et.version>0.2.0</et.version>
+        <awaitility.version>1.7.0</awaitility.version>
     </properties>
 
     <dependencies>
@@ -27,6 +29,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mscharhag</groupId>
+            <artifactId>et</artifactId>
+            <version>${et.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -38,6 +45,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <version>${awaitility.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

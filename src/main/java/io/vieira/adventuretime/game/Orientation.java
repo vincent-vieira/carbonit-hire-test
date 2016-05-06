@@ -1,7 +1,9 @@
 package io.vieira.adventuretime.game;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Getter;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -14,6 +16,7 @@ import java.util.function.Function;
 public enum Orientation {
     //TODO : use an internal String field to map parsed data from files
     NORTH(
+            "N",
             new ImmutableMap.Builder<Direction, PositionAdjuster>()
                     .put(Direction.FORWARD, new PositionAdjuster(
                             PositionAdjuster.RETREAT,
@@ -30,6 +33,7 @@ public enum Orientation {
                     .build()
     ),
     SOUTH(
+            "S",
             new HashMap<Direction, PositionAdjuster>(){{
                 put(Direction.FORWARD, new PositionAdjuster(
                         PositionAdjuster.ADD,
@@ -46,6 +50,7 @@ public enum Orientation {
             }}
     ),
     WEST(
+            "O",
             new HashMap<Direction, PositionAdjuster>(){{
                 put(Direction.FORWARD, new PositionAdjuster(
                         PositionAdjuster.IDENTITY,
@@ -62,6 +67,7 @@ public enum Orientation {
             }}
     ),
     EAST(
+            "E",
             new HashMap<Direction, PositionAdjuster>(){{
                 put(Direction.FORWARD, new PositionAdjuster(
                         PositionAdjuster.IDENTITY,
@@ -78,13 +84,31 @@ public enum Orientation {
             }}
     );
 
+    @Getter
+    private final String orientationCode;
+
     private final Map<Direction, PositionAdjuster> positionAdjusters;
 
-
-    Orientation(Map<Direction, PositionAdjuster> adjusters){
+    Orientation(String orientationCode, Map<Direction, PositionAdjuster> adjusters){
+        this.orientationCode = orientationCode;
         this.positionAdjusters = adjusters;
     }
 
+    public static Orientation fromString(String orientationCode) {
+        return Arrays
+                .stream(Orientation.values())
+                .filter(orientation -> orientation.getOrientationCode().equalsIgnoreCase(orientationCode))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("'%s' is not a valid orientation code.", orientationCode)
+                ));
+    }
+
+    /**
+     * Inner class providing fluent coordinates calculations, without doing anything.
+     *
+     * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
+     */
     public static class PositionAdjuster {
 
         static final Function<Integer, Integer> IDENTITY = integer -> integer;
@@ -99,6 +123,12 @@ public enum Orientation {
             this.eastingAdjuster = eastingAdjuster;
         }
 
+        /**
+         * Adjusts the position passed as a parameter into a new one an returns it.
+         *
+         * @param currentPosition the current {@link Position}
+         * @return the new computed {@link Position}
+         */
         Position adjust(Position currentPosition){
             return new Position(
                     northingAdjuster.apply(currentPosition.getNorthing()),
@@ -107,10 +137,22 @@ public enum Orientation {
         }
     }
 
+    /**
+     * Returns the {@link PositionAdjuster} associated to the supplied direction.
+     *
+     * @param direction the direction
+     * @return the associated {@link PositionAdjuster}
+     */
     public PositionAdjuster move(Direction direction) {
         return this.positionAdjusters.get(direction);
     }
 
+    /**
+     * Deduces the new {@link Orientation} based on the current one and the next {@link Direction} to follow.
+     *
+     * @param direction the future direction to follow
+     * @return the new {@link Orientation}
+     */
     public Orientation deduce(Direction direction){
         if(direction == Direction.FORWARD){
             return this;

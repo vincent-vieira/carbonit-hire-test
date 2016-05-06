@@ -3,6 +3,7 @@ package io.vieira.adventuretime.game;
 import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.WorldElement;
+import io.vieira.adventuretime.game.helpers.WorldSize;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class AdventureWorldTest {
                 .Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
                 .build();
 
         Assert.assertEquals(
@@ -56,13 +57,28 @@ public class AdventureWorldTest {
         new AdventureWorld.Builder().build();
     }
 
+    @Test
+    public void testMapInitializationWithWorldSizeClass(){
+        AdventureWorld world = new AdventureWorld.Builder().size(new WorldSize(8, 8)).build();
+        Assert.assertEquals(
+                "Map must be 8x8",
+                world.getSize(),
+                new WorldSize(8, 8)
+        );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testMapInitializationWithNullWorldSize(){
+        new AdventureWorld.Builder().size(null).build();
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void testMapInitializationWithInvalidRelativeCoordinates(){
         new AdventureWorld
                 .Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(0, 0))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 0, 0))
                 .build();
     }
 
@@ -81,7 +97,7 @@ public class AdventureWorldTest {
         new AdventureWorld.Builder()
                 .width(8)
                 .height(8)
-                .adventurer(new Adventurer(1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
                 .mountain(new Mountain(1, 1))
                 .build();
     }
