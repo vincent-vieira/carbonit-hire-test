@@ -121,7 +121,7 @@ public class AdventureReporterTest {
 
     @Test
     public void testNullAdventurerReport(){
-        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expect(NullPointerException.class);
         expectedException.expectMessage("A valid reporter must be supplied");
         new AdventureWorld.Builder()
                 .height(6)

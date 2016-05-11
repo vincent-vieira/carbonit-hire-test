@@ -42,16 +42,14 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder size(WorldSize size){
-            //Not using Objects.requireNonNull() because of exception type not suiting my needs
-            if(size == null){
-                throw new IllegalArgumentException("WorldSize must be supplied");
-            }
+            Objects.requireNonNull(size, "A valid size must be supplied");
             this.height = size.getHeight();
             this.width = size.getWidth();
             return this;
         }
 
         public Builder adventurer(Adventurer adventurer){
+            Objects.requireNonNull(adventurer, "A valid adventurer must be supplied");
             if(this.worldElements.contains(adventurer)){
                 throwCellAlreadyOccupiedInternal(adventurer);
             }
@@ -65,6 +63,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder treasure(Treasure treasure){
+            Objects.requireNonNull(treasure, "A valid treasure must be supplied");
             if(this.worldElements.contains(treasure)){
                 throwCellAlreadyOccupiedInternal(treasure);
             }
@@ -78,6 +77,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder mountain(Mountain mountain){
+            Objects.requireNonNull(mountain, "A valid mountain must be supplied");
             if(this.worldElements.contains(mountain)){
                 throwCellAlreadyOccupiedInternal(mountain);
             }
@@ -91,9 +91,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder reporter(AdventureReporter reporter){
-            if(reporter == null){
-                throw new IllegalArgumentException("A valid reporter must be supplied");
-            }
+            Objects.requireNonNull(reporter, "A valid reporter must be supplied");
             this.reporter = reporter;
             return this;
         }

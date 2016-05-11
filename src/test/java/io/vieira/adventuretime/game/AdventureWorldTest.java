@@ -4,8 +4,12 @@ import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.helpers.WorldSize;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.HashMap;
 
@@ -15,6 +19,9 @@ import java.util.HashMap;
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
 public class AdventureWorldTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testMapInitialization(){
@@ -67,8 +74,10 @@ public class AdventureWorldTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testMapInitializationWithNullWorldSize(){
+        expectedException.expect(NullPointerException.class);
+        expectedException.expectMessage("A valid size must be supplied");
         new AdventureWorld.Builder().size(null).build();
     }
 
