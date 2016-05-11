@@ -26,7 +26,8 @@ import java.util.stream.Stream;
 public class AdventureWorld implements PositionAccessor, ElementsRepartitionAccessor, MovementProvider {
 
     public static class Builder {
-        private List<WorldElement> worldElements = new ArrayList<>();
+        private final List<WorldElement> worldElements = new ArrayList<>();
+        private final List<String> registeredAdventurers = new ArrayList<>();
         private int width = -1;
         private int height = -1;
         private AdventureReporter reporter = new AdventureReporter.NoOpReporter();
@@ -50,9 +51,18 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
 
         public Builder adventurer(Adventurer adventurer){
             Objects.requireNonNull(adventurer, "A valid adventurer must be supplied");
+            if(registeredAdventurers.contains(adventurer.getAdventurerName())){
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Adventurer '%s' already exists",
+                                adventurer.getAdventurerName()
+                        )
+                );
+            }
             if(this.worldElements.contains(adventurer)){
                 throwCellAlreadyOccupiedInternal(adventurer);
             }
+            registeredAdventurers.add(adventurer.getAdventurerName());
             this.worldElements.add(adventurer);
             return this;
         }
