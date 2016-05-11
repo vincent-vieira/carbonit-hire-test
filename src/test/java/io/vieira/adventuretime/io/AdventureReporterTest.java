@@ -10,7 +10,9 @@ import io.vieira.adventuretime.game.io.write.AdventureReporter;
 import io.vieira.adventuretime.game.io.write.Savable;
 import lombok.Getter;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -85,6 +87,9 @@ public class AdventureReporterTest {
         abstract void doAssertions(List<String> collectedSavables);
     }
 
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
+
     @Test
     public void testAdventureWorldReportWithoutAnyMovement(){
         currentWorld = new AdventureWorld.Builder()
@@ -112,5 +117,16 @@ public class AdventureReporterTest {
         currentWorld.move("John", Direction.LEFT);
         currentWorld.end();
         await().atMost(1, TimeUnit.SECONDS).until(() -> reporter.isEndOfReporter());
+    }
+
+    @Test
+    public void testNullAdventurerReport(){
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("A valid reporter must be supplied");
+        new AdventureWorld.Builder()
+                .height(6)
+                .width(6)
+                .reporter(null)
+                .build();
     }
 }

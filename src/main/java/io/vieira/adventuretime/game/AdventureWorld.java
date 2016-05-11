@@ -29,7 +29,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         private List<WorldElement> worldElements = new ArrayList<>();
         private int width = -1;
         private int height = -1;
-        private AdventureReporter reporter;
+        private AdventureReporter reporter = new AdventureReporter.NoOpReporter();
 
         public Builder width(int width){
             this.width = width;
@@ -42,6 +42,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder size(WorldSize size){
+            //Not using Objects.requireNonNull() because of exception type not suiting my needs
             if(size == null){
                 throw new IllegalArgumentException("WorldSize must be supplied");
             }
@@ -90,6 +91,9 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder reporter(AdventureReporter reporter){
+            if(reporter == null){
+                throw new IllegalArgumentException("A valid reporter must be supplied");
+            }
             this.reporter = reporter;
             return this;
         }
