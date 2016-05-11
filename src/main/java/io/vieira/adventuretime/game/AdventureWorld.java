@@ -26,10 +26,11 @@ import java.util.stream.Stream;
 public class AdventureWorld implements PositionAccessor, ElementsRepartitionAccessor, MovementProvider {
 
     public static class Builder {
-        private List<WorldElement> worldElements = new ArrayList<>();
+        private final List<WorldElement> worldElements = new ArrayList<>();
+        private final List<String> registeredAdventurers = new ArrayList<>();
         private int width = -1;
         private int height = -1;
-        private AdventureReporter reporter;
+        private AdventureReporter reporter = new AdventureReporter.NoOpReporter();
 
         public Builder width(int width){
             this.width = width;
@@ -42,18 +43,26 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder size(WorldSize size){
-            if(size == null){
-                throw new IllegalArgumentException("WorldSize must be supplied");
-            }
+            Objects.requireNonNull(size, "A valid size must be supplied");
             this.height = size.getHeight();
             this.width = size.getWidth();
             return this;
         }
 
         public Builder adventurer(Adventurer adventurer){
+            Objects.requireNonNull(adventurer, "A valid adventurer must be supplied");
+            if(registeredAdventurers.contains(adventurer.getAdventurerName())){
+                throw new IllegalArgumentException(
+                        String.format(
+                                "Adventurer '%s' already exists",
+                                adventurer.getAdventurerName()
+                        )
+                );
+            }
             if(this.worldElements.contains(adventurer)){
                 throwCellAlreadyOccupiedInternal(adventurer);
             }
+            registeredAdventurers.add(adventurer.getAdventurerName());
             this.worldElements.add(adventurer);
             return this;
         }
@@ -64,6 +73,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder treasure(Treasure treasure){
+            Objects.requireNonNull(treasure, "A valid treasure must be supplied");
             if(this.worldElements.contains(treasure)){
                 throwCellAlreadyOccupiedInternal(treasure);
             }
@@ -77,6 +87,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder mountain(Mountain mountain){
+            Objects.requireNonNull(mountain, "A valid mountain must be supplied");
             if(this.worldElements.contains(mountain)){
                 throwCellAlreadyOccupiedInternal(mountain);
             }
@@ -90,6 +101,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
 
         public Builder reporter(AdventureReporter reporter){
+            Objects.requireNonNull(reporter, "A valid reporter must be supplied");
             this.reporter = reporter;
             return this;
         }

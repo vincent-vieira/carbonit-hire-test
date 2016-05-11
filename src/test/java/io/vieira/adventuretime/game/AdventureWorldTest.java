@@ -4,8 +4,12 @@ import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.WorldElement;
 import io.vieira.adventuretime.game.helpers.WorldSize;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.HashMap;
 
@@ -15,6 +19,9 @@ import java.util.HashMap;
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
 public class AdventureWorldTest {
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void testMapInitialization(){
@@ -67,8 +74,10 @@ public class AdventureWorldTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testMapInitializationWithNullWorldSize(){
+        expectedException.expect(NullPointerException.class);
+        expectedException.expectMessage("A valid size must be supplied");
         new AdventureWorld.Builder().size(null).build();
     }
 
@@ -100,5 +109,52 @@ public class AdventureWorldTest {
                 .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
                 .mountain(new Mountain(1, 1))
                 .build();
+    }
+
+    @Test
+    public void testMapInitializationUsingDuplicateAdventurerNames(){
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage(new TypeSafeMatcher<String>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendValue("Adventurer '...' already exists");
+            }
+
+            @Override
+            protected boolean matchesSafely(String s) {
+                return s.matches("Adventurer '[\\w\\s]+' already exists");
+            }
+        });
+        new AdventureWorld.Builder()
+                .width(8)
+                .height(8)
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 2));
+    }
+
+    @Test
+    public void testMapInitializationUsingDuplicateAdventurerNamesWithDifferentCasing(){
+        AdventureWorld toCheck = new AdventureWorld.Builder()
+                .width(8)
+                .height(8)
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "john", 1, 2))
+                .build();
+        Assert.assertEquals(
+                "Adventurer at 1,1 must be John",
+                1,
+                toCheck.at(new Position(1, 1))
+                        .filter(worldElement -> worldElement instanceof Adventurer)
+                        .filter(worldElement -> ((Adventurer) worldElement).getAdventurerName().equals("John"))
+                        .count()
+        );
+        Assert.assertEquals(
+                "Adventurer at 2,1 must be John",
+                1,
+                toCheck.at(new Position(1, 2))
+                        .filter(worldElement -> worldElement instanceof Adventurer)
+                        .filter(worldElement -> ((Adventurer) worldElement).getAdventurerName().equals("john"))
+                        .count()
+        );
     }
 }
