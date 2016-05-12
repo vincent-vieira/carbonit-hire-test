@@ -142,4 +142,21 @@ public class AdventurerTest {
                 ((Treasure) currentMap.at(new Position(3, 1)).filter(worldElement -> worldElement instanceof Treasure).findFirst().orElse(null)).getRemainingLoots()
         );
     }
+
+    @Test
+    public void testAdventurerMovementOnAnother(){
+        AdventureWorld toCheck = new AdventureWorld
+                .Builder()
+                .width(8)
+                .height(8)
+                .adventurer(new Adventurer(Orientation.NORTH, "John", 1, 1))
+                .adventurer(new Adventurer(Orientation.NORTH, "Bill", 2, 1))
+                .build();
+        toCheck.move("Bill", Direction.FORWARD);
+        Assert.assertEquals(
+                "Bill must not have moved because John is occupying the cell.",
+                1,
+                toCheck.at(new Position(2, 1)).filter(worldElement -> worldElement instanceof Adventurer).count()
+        );
+    }
 }

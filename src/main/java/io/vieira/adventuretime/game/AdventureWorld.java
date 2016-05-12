@@ -189,21 +189,27 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public synchronized MovementTryResult tryMoving(String adventurerName, Direction direction) {
+    public MovementTryResult tryMoving(String adventurerName, Direction direction) {
         Adventurer adventurer = getAdventurerInternal(adventurerName);
         Position newPosition = adventurer.getCurrentOrientation().move(direction).adjust(adventurer.getPosition());
         Orientation newOrientation = adventurer.getCurrentOrientation().deduce(direction);
 
         boolean isNewPositionInBounds = newPosition.getAbsoluteEasting() >= 0 && newPosition.getAbsoluteNorthing() >= 0;
+        WorldElement elementAtNewPosition = at(newPosition)
+                .filter(worldElement -> worldElement instanceof Mountain || worldElement instanceof Adventurer)
+                .findFirst()
+                .orElse(null);
+
         return new MovementTryResult(
-                isNewPositionInBounds && !(at(newPosition).filter(worldElement -> worldElement instanceof Mountain).count() == 1),
+                isNewPositionInBounds && elementAtNewPosition == null,
                 isNewPositionInBounds ? newOrientation : null,
-                isNewPositionInBounds ? newPosition : null
+                isNewPositionInBounds ? newPosition : null,
+                elementAtNewPosition
         );
     }
 
     @Override
-    public synchronized void move(String adventurerName, Direction direction) {
+    public void move(String adventurerName, Direction direction) {
         MovementTryResult result = tryMoving(adventurerName, direction);
         if(result.isASuccess()){
             Position newPosition = result.getNewPosition();
