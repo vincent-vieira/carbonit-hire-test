@@ -30,7 +30,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         private final List<String> registeredAdventurers = new ArrayList<>();
         private int width = -1;
         private int height = -1;
-        private AdventureReporter reporter = new AdventureReporter.NoOpReporter();
+        private AdventureReporter reporter = new AdventureReporter.LoggingReporter();
 
         public Builder width(int width){
             this.width = width;
