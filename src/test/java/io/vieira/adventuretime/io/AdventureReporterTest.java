@@ -5,7 +5,7 @@ import io.vieira.adventuretime.game.Direction;
 import io.vieira.adventuretime.game.Orientation;
 import io.vieira.adventuretime.game.elements.Adventurer;
 import io.vieira.adventuretime.game.elements.Mountain;
-import io.vieira.adventuretime.game.io.parse.GameInstruction;
+import io.vieira.adventuretime.game.io.read.GameInstruction;
 import io.vieira.adventuretime.game.io.write.AdventureReporter;
 import io.vieira.adventuretime.game.io.write.Savable;
 import lombok.Getter;

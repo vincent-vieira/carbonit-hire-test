@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,25 +16,33 @@ import java.util.stream.Collectors;
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
 @ToString(callSuper = true)
-@Getter
 public class Adventurer extends WorldElement {
 
     @Setter
+    @Getter
     private int pickedUpTreasures;
 
+    @Getter
     private final String adventurerName;
 
     @Setter
+    @Getter
     private Orientation currentOrientation;
 
     private final List<Direction> pathHistory = new ArrayList<>();
 
-    //TODO : Queue for configured path ?
+    @Getter
+    private final Deque<Direction> remainingPath;
 
     public Adventurer(Orientation orientation, String adventurerName, int northing, int easting) {
+        this(orientation, adventurerName, northing, easting, Collections.emptyList());
+    }
+
+    public Adventurer(Orientation orientation, String adventurerName, int northing, int easting, List<Direction> instructions){
         super(northing, easting);
         this.adventurerName = adventurerName;
         this.currentOrientation = orientation;
+        this.remainingPath = new LinkedList<>(instructions);
     }
 
     //Exposing the necessary setter just here
@@ -55,5 +61,15 @@ public class Adventurer extends WorldElement {
             joiner.add(directionsHistory);
         }
         return joiner.toString();
+    }
+
+    /**
+     * Marks the specified {@link Direction} as the last "moved" direction, removing it from the {@link Adventurer#remainingPath} if present.
+     *
+     * @param direction the direction to move to
+     */
+    public void markMove(Direction direction){
+        this.pathHistory.add(direction);
+        this.remainingPath.poll();
     }
 }

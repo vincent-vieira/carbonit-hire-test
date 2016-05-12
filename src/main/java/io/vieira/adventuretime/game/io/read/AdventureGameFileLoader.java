@@ -12,9 +12,6 @@ import io.vieira.adventuretime.game.io.write.PathReporter;
 import io.vieira.adventuretime.game.io.exception.GameInstructionParsingException;
 import io.vieira.adventuretime.game.io.exception.MissingGameParameterException;
 import io.vieira.adventuretime.game.io.exception.UnreadableGameFile;
-import io.vieira.adventuretime.game.io.parse.AdventureGameInstructionParser;
-import io.vieira.adventuretime.game.io.parse.GameInstruction;
-import io.vieira.adventuretime.game.io.parse.GameInstructionParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -123,7 +120,7 @@ public class AdventureGameFileLoader {
                         .findFirst()
                         .orElseThrow(() -> new MissingGameParameterException("The world size is missing."))
                 )
-                .reporter(outputPath == null ? new AdventureReporter.NoOpReporter() : new PathReporter(outputPath))
+                .reporter(outputPath == null ? new AdventureReporter.LoggingReporter() : new PathReporter(outputPath))
                 .adventurers(adventurers)
                 .mountains(declaredGameObjects.stream().filter(o -> o instanceof Mountain).toArray(Mountain[]::new))
                 .treasures(declaredGameObjects.stream().filter(o -> o instanceof Treasure).toArray(Treasure[]::new))

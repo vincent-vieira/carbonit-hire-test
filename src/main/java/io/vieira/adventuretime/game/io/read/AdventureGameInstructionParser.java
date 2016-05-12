@@ -1,4 +1,4 @@
-package io.vieira.adventuretime.game.io.parse;
+package io.vieira.adventuretime.game.io.read;
 
 import io.vieira.adventuretime.game.io.exception.GameInstructionParsingException;
 
@@ -27,7 +27,7 @@ public class AdventureGameInstructionParser implements GameInstructionParser {
     @Override
     public final Object fromLine(String line) throws GameInstructionParsingException {
         return instructions.stream()
-                .filter(gameInstruction -> gameInstruction.instructionPattern().matcher(line).matches())
+                .filter(gameInstruction -> gameInstruction.instructionPattern().matcher(line.trim()).matches())
                 .map(gameInstruction -> gameInstruction.transform(line))
                 .findFirst()
                 .orElse(null);

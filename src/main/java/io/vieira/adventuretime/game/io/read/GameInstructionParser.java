@@ -1,4 +1,4 @@
-package io.vieira.adventuretime.game.io.parse;
+package io.vieira.adventuretime.game.io.read;
 
 import io.vieira.adventuretime.game.io.exception.GameInstructionParsingException;
 
