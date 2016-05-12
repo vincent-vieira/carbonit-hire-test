@@ -222,7 +222,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                 adventurer.setPickedUpTreasures(adventurer.getPickedUpTreasures() + 1);
                 ((Treasure) this.worldElements[newPosition.getAbsoluteNorthing()][newPosition.getAbsoluteEasting()]).removeALoot();
             }
-            adventurer.getPathHistory().add(direction);
+            adventurer.markMove(direction);
             adventurers.put(adventurerName, adventurer);
         }
     }
