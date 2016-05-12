@@ -1,5 +1,7 @@
 package io.vieira.adventuretime.game.io.write;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.stream.Stream;
 
 /**
@@ -17,10 +19,14 @@ public interface AdventureReporter {
      */
     void report(Stream<Savable> savableStream);
 
-    class NoOpReporter implements AdventureReporter{
+    @Slf4j
+    class LoggingReporter implements AdventureReporter{
+
         @Override
         public void report(Stream<Savable> savableStream) {
-            //Noop
+            savableStream
+                    .map(Savable::getSavableRepresentation)
+                    .forEach(log::info);
         }
     }
 }
