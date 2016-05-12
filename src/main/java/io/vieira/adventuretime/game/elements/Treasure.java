@@ -27,6 +27,6 @@ public class Treasure extends WorldElement {
 
     @Override
     public String getSavableRepresentation() {
-        return new StringJoiner(" ").add("T").add(super.getSavableRepresentation()).toString();
+        return new StringJoiner(" ").add("T").add(super.getSavableRepresentation()).add(Integer.toString(remainingLoots)).toString();
     }
 }

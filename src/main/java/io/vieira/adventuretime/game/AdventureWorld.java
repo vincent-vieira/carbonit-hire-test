@@ -207,10 +207,10 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         Orientation newOrientation = adventurer.getCurrentOrientation().deduce(direction);
 
         boolean isNewPositionInBounds = newPosition.getAbsoluteEasting() >= 0 && newPosition.getAbsoluteNorthing() >= 0;
-        WorldElement elementAtNewPosition = at(newPosition)
+        WorldElement elementAtNewPosition = isNewPositionInBounds ? at(newPosition)
                 .filter(worldElement -> worldElement instanceof Mountain || worldElement instanceof Adventurer)
                 .findFirst()
-                .orElse(null);
+                .orElse(null) : null;
 
         return new MovementTryResult(
                 isNewPositionInBounds && elementAtNewPosition == null,

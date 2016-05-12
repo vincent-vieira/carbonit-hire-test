@@ -35,14 +35,15 @@ public class Adventurer extends WorldElement {
     private final Deque<Direction> remainingPath;
 
     public Adventurer(Orientation orientation, String adventurerName, int northing, int easting) {
-        this(orientation, adventurerName, northing, easting, Collections.emptyList());
+        this(orientation, adventurerName, northing, easting, Collections.emptyList(), 0);
     }
 
-    public Adventurer(Orientation orientation, String adventurerName, int northing, int easting, List<Direction> instructions){
+    public Adventurer(Orientation orientation, String adventurerName, int northing, int easting, List<Direction> instructions, int pickedUpTreasures){
         super(northing, easting);
         this.adventurerName = adventurerName;
         this.currentOrientation = orientation;
         this.remainingPath = new LinkedList<>(instructions);
+        this.pickedUpTreasures = pickedUpTreasures;
     }
 
     //Exposing the necessary setter just here
@@ -57,10 +58,10 @@ public class Adventurer extends WorldElement {
                 .add(adventurerName)
                 .add(super.getSavableRepresentation())
                 .add(currentOrientation.getOrientationCode());
-        if(!directionsHistory.equals("")){
+        if(!"".equals(directionsHistory)){
             joiner.add(directionsHistory);
         }
-        return joiner.toString();
+        return joiner.add(Integer.toString(pickedUpTreasures)).toString();
     }
 
     /**
