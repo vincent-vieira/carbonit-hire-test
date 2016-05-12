@@ -10,6 +10,7 @@ import io.vieira.adventuretime.game.helpers.WorldSize;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -96,7 +97,7 @@ public interface GameInstruction<T> {
     };
 
     GameInstruction ADVENTURER = new GameInstruction<Adventurer>() {
-        private final Pattern instructionPattern = Pattern.compile("^(\\w+)\\s(\\d-\\d)\\s(N|E|S|O)\\s?([A|D|G]*)$");
+        private final Pattern instructionPattern = Pattern.compile("^(\\w+)\\s(\\d-\\d)\\s(N|E|S|O)\\s?([A|D|G]*)?\\s?(\\d)?$");
 
         @Override
         public Pattern instructionPattern() {
@@ -108,13 +109,16 @@ public interface GameInstruction<T> {
             Matcher matcher = instructionPattern().matcher(line);
             matcher.find();
             Position position = Position.fromString(matcher.group(2));
+            String plannedPath = Optional.ofNullable(matcher.group(4)).orElse("");
+            Integer treasuresFound = Integer.parseInt(Optional.ofNullable(matcher.group(5)).orElseGet(() -> "0"));
 
             return new Adventurer(
                     Orientation.fromString(matcher.group(3)),
                     matcher.group(1),
                     position.getNorthing(),
                     position.getEasting(),
-                    new ArrayList<>(Arrays.stream(matcher.group(4).split("")).map(Direction::fromCode).collect(Collectors.toList()))
+                    !"".equals(plannedPath) ? Arrays.stream(matcher.group(4).split("")).map(Direction::fromCode).collect(Collectors.toList()) : new ArrayList<>(),
+                    treasuresFound
             );
         }
     };
