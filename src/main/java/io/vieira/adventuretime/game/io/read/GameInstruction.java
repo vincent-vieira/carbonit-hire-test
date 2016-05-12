@@ -1,5 +1,6 @@
-package io.vieira.adventuretime.game.io.parse;
+package io.vieira.adventuretime.game.io.read;
 
+import io.vieira.adventuretime.game.Direction;
 import io.vieira.adventuretime.game.Orientation;
 import io.vieira.adventuretime.game.Position;
 import io.vieira.adventuretime.game.elements.Adventurer;
@@ -7,8 +8,11 @@ import io.vieira.adventuretime.game.elements.Mountain;
 import io.vieira.adventuretime.game.elements.Treasure;
 import io.vieira.adventuretime.game.helpers.WorldSize;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Game instruction interface, providing line matching and transformation into any type.
@@ -105,12 +109,12 @@ public interface GameInstruction<T> {
             matcher.find();
             Position position = Position.fromString(matcher.group(2));
 
-            //TODO : set adventurer path ?
             return new Adventurer(
                     Orientation.fromString(matcher.group(3)),
                     matcher.group(1),
                     position.getNorthing(),
-                    position.getEasting()
+                    position.getEasting(),
+                    new ArrayList<>(Arrays.stream(matcher.group(4).split("")).map(Direction::fromCode).collect(Collectors.toList()))
             );
         }
     };

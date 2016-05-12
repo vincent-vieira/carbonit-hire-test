@@ -12,9 +12,6 @@ import io.vieira.adventuretime.game.io.write.PathReporter;
 import io.vieira.adventuretime.game.io.exception.GameInstructionParsingException;
 import io.vieira.adventuretime.game.io.exception.MissingGameParameterException;
 import io.vieira.adventuretime.game.io.exception.UnreadableGameFile;
-import io.vieira.adventuretime.game.io.parse.AdventureGameInstructionParser;
-import io.vieira.adventuretime.game.io.parse.GameInstruction;
-import io.vieira.adventuretime.game.io.parse.GameInstructionParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
