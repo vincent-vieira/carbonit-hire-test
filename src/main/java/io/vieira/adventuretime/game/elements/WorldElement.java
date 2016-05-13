@@ -2,6 +2,7 @@ package io.vieira.adventuretime.game.elements;
 
 import io.vieira.adventuretime.game.AdventureWorld;
 import io.vieira.adventuretime.game.Position;
+import io.vieira.adventuretime.game.io.write.Savable;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -15,7 +16,7 @@ import lombok.ToString;
  */
 @ToString
 @Getter
-public abstract class WorldElement {
+public abstract class WorldElement implements Savable {
 
     public WorldElement(int northing, int easting){
         if(northing <= 0 || easting <= 0){
@@ -36,5 +37,10 @@ public abstract class WorldElement {
         }
         WorldElement other = (WorldElement) o;
         return other.getPosition().equals(position);
+    }
+
+    @Override
+    public String getSavableRepresentation() {
+        return this.position.getSavableRepresentation();
     }
 }

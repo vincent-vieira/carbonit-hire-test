@@ -7,9 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Adventurer model class.
@@ -17,35 +16,61 @@ import java.util.UUID;
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
 @ToString(callSuper = true)
-@Getter
 public class Adventurer extends WorldElement {
 
     @Setter
+    @Getter
     private int pickedUpTreasures;
 
-    private final UUID adventurerID;
+    @Getter
+    private final String adventurerName;
 
     @Setter
+    @Getter
     private Orientation currentOrientation;
 
     private final List<Direction> pathHistory = new ArrayList<>();
 
-    public Adventurer(int northing, int easting) {
-        this(Orientation.EAST, UUID.randomUUID(), northing, easting);
+    @Getter
+    private final Deque<Direction> remainingPath;
+
+    public Adventurer(Orientation orientation, String adventurerName, int northing, int easting) {
+        this(orientation, adventurerName, northing, easting, Collections.emptyList(), 0);
     }
 
-    public Adventurer(Orientation orientation, int northing, int easting) {
-        this(orientation, UUID.randomUUID(), northing, easting);
-    }
-
-    public Adventurer(Orientation orientation, UUID id, int northing, int easting) {
+    public Adventurer(Orientation orientation, String adventurerName, int northing, int easting, List<Direction> instructions, int pickedUpTreasures){
         super(northing, easting);
-        this.adventurerID = id;
+        this.adventurerName = adventurerName;
         this.currentOrientation = orientation;
+        this.remainingPath = new LinkedList<>(instructions);
+        this.pickedUpTreasures = pickedUpTreasures;
     }
 
     //Exposing the necessary setter just here
     public void updatePosition(Position newPosition){
         this.position = newPosition;
+    }
+
+    @Override
+    public String getSavableRepresentation() {
+        String directionsHistory = pathHistory.stream().map(Direction::getDirectionCode).collect(Collectors.joining());
+        StringJoiner joiner = new StringJoiner(" ")
+                .add(adventurerName)
+                .add(super.getSavableRepresentation())
+                .add(currentOrientation.getOrientationCode());
+        if(!"".equals(directionsHistory)){
+            joiner.add(directionsHistory);
+        }
+        return joiner.add(Integer.toString(pickedUpTreasures)).toString();
+    }
+
+    /**
+     * Marks the specified {@link Direction} as the last "moved" direction, removing it from the {@link Adventurer#remainingPath} if present.
+     *
+     * @param direction the direction to move to
+     */
+    public void markMove(Direction direction){
+        this.pathHistory.add(direction);
+        this.remainingPath.poll();
     }
 }
