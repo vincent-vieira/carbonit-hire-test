@@ -5,6 +5,7 @@ import io.vieira.adventuretime.game.AdventurerTest;
 import io.vieira.adventuretime.io.AdventureReporterTest;
 import io.vieira.adventuretime.io.MultipleAdventureGameFileLoaderTest;
 import io.vieira.adventuretime.io.UniqueAdventureGameFileLoaderTest;
+import io.vieira.adventuretime.threading.AutomaticAdventureWorldTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,6 +20,7 @@ import org.junit.runners.Suite;
         AdventurerTest.class,
         UniqueAdventureGameFileLoaderTest.class,
         MultipleAdventureGameFileLoaderTest.class,
-        AdventureReporterTest.class
+        AdventureReporterTest.class,
+        AutomaticAdventureWorldTest.class
 })
 public class ApplicationTest {}

@@ -10,6 +10,7 @@ import io.vieira.adventuretime.game.io.write.AdventureReporter;
 import io.vieira.adventuretime.game.routines.ElementsRepartitionAccessor;
 import io.vieira.adventuretime.game.routines.MovementProvider;
 import io.vieira.adventuretime.game.routines.PositionAccessor;
+import io.vieira.adventuretime.game.threading.AutomaticAdventureWorld;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -127,15 +128,23 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         }
     }
 
-    private final WorldElement[][] worldElements;
+    protected final WorldElement[][] worldElements;
 
     private final int height;
 
     private final int width;
 
-    private final Map<String, Adventurer> adventurers = new ConcurrentHashMap<>();
+    protected final Map<String, Adventurer> adventurers = new ConcurrentHashMap<>();
 
     private final AdventureReporter reporter;
+
+    protected AdventureWorld(AdventureWorld other){
+        worldElements = other.worldElements;
+        height = other.height;
+        width = other.width;
+        adventurers.putAll(other.adventurers);
+        reporter = other.reporter;
+    }
 
     private AdventureWorld(int width, int height, List<WorldElement> worldElements, AdventureReporter reporter){
         this.reporter = reporter;
@@ -169,7 +178,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public Stream<WorldElement> at(Position position) {
+    public synchronized Stream<WorldElement> at(Position position) {
         if(position.getAbsoluteNorthing() >= height || position.getAbsoluteNorthing() < 0){
             throw new IndexOutOfBoundsException();
         }
@@ -187,7 +196,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
         ).filter(worldElement -> worldElement != null);
     }
 
-    private Adventurer getAdventurerInternal(String adventurerName){
+    protected Adventurer getAdventurerInternal(String adventurerName){
         Adventurer adventurer = this.adventurers.getOrDefault(adventurerName, null);
         if(adventurer == null){
             throw new IllegalStateException(
@@ -201,7 +210,7 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
     }
 
     @Override
-    public MovementTryResult tryMoving(String adventurerName, Direction direction) {
+    public synchronized MovementTryResult tryMoving(String adventurerName, Direction direction) {
         Adventurer adventurer = getAdventurerInternal(adventurerName);
         Position newPosition = adventurer.getCurrentOrientation().move(direction).adjust(adventurer.getPosition());
         Orientation newOrientation = adventurer.getCurrentOrientation().deduce(direction);
@@ -260,6 +269,15 @@ public class AdventureWorld implements PositionAccessor, ElementsRepartitionAcce
                         WorldElement::getClass,
                         Collectors.counting()
                 ));
+    }
+
+    /**
+     * Produces a new superclass of this {@link AdventureWorld}, cloning the already present data.
+     *
+     * @return the new {@link AdventureWorld}, using automated game routines
+     */
+    public AutomaticAdventureWorld automatic() {
+        return new AutomaticAdventureWorld(this);
     }
 
     /**

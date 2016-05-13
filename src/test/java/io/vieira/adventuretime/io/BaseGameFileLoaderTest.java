@@ -17,7 +17,7 @@ import java.util.Optional;
  *
  * @author <a href="mailto:vincent.vieira@supinfo.com">Vincent Vieira</a>
  */
-abstract class BaseGameFileLoaderTest {
+public abstract class BaseGameFileLoaderTest {
 
     protected abstract String getTestType();
 
@@ -28,7 +28,7 @@ abstract class BaseGameFileLoaderTest {
      * @return a {@link Path} object representing the file
      * @throws URISyntaxException if a malformatted path is supplied.
      */
-    Path getResource(String path) throws URISyntaxException {
+    protected Path getResource(String path) throws URISyntaxException {
         return Paths.get(this.getClass().getClassLoader().getResource(getTestType()+path).toURI());
     }
 
