@@ -26,7 +26,7 @@ public interface AdventureReporter {
         public void report(Stream<Savable> savableStream) {
             savableStream
                     .map(Savable::getSavableRepresentation)
-                    .forEach(log::info);
+                    .forEach(log::debug);
         }
     }
 }
