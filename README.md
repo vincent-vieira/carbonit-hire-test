@@ -14,8 +14,15 @@ at the right of the title**), and the CI job is configured to run all unit tests
 
 ## Playing with the project
 ### Running/testing
-Just run the `package` Maven goal to compile sources, trigger tests and generate the Javadoc.
-All docs will be present in the `docs` subfolder of the `${project.basedir}` folder.
+Just run the `package` Maven goal to :
+- Compile sources
+- Trigger tests
+- Generate the Javadoc
+- Generate all code coverages reports
+
+_All docs will be present in the `docs` subfolder of the `${project.basedir}` folder._
+
+_All coverage reports will be present in the `coverage` subfolder of the `${project.basedir}` folder._
 
 If you just want to launch the program, use the `exec:java` goal with the `exec.mainClass` property set, pointing to the
 main class `io.vieira.adventuretime.Application`.
